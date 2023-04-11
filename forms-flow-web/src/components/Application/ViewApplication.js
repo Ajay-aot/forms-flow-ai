@@ -20,6 +20,8 @@ import { Translation,useTranslation } from "react-i18next";
 import { CUSTOM_SUBMISSION_URL,CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { getCustomSubmission } from "../../apiManager/services/FormServices";
+import Bundlehistory from "./BundleHistory";
+import { useState } from "react";
 
 const ViewApplication = React.memo(() => {
   const {t} = useTranslation();
@@ -39,6 +41,7 @@ const ViewApplication = React.memo(() => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const [history, setHistory] = useState(0);
 
   useEffect(() => {
     dispatch(setApplicationDetailLoader(true));
@@ -83,6 +86,10 @@ const ViewApplication = React.memo(() => {
       />
     );
   }
+  const bundlehistory = ()=>{
+    console.log("haiiiiiiiiiiiiiiii");
+    setHistory(1);
+  };
 
   return (
     <div className="container">
@@ -115,8 +122,11 @@ const ViewApplication = React.memo(() => {
         <Tab
           eventKey="history"
           title={<Translation>{(t) => t("History")}</Translation>}
+          onClick={bundlehistory}
         >
-          <History page="application-detail" applicationId={applicationId} />
+        { history === 1 ? 
+        <Bundlehistory/> : 
+        <History page="application-detail" applicationId={applicationId} />}
         </Tab>
         <Tab
           eventKey="process-diagram"
