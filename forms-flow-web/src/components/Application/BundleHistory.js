@@ -1,9 +1,9 @@
 import React from "react";
-import ApplicationStatus from "../Bundle/bundleDesign/ApplicationStatus";
 import RequestStatus from "../Bundle/bundleDesign/RequestStatus";
+import ApplicationStatus from "../Bundle/bundleDesign/ApplicationStatus";
 import { useState } from "react";
 import "./Application.scss";
-import { Link } from "@material-ui/core";
+import { Box, Link } from "@material-ui/core";
 
 export default function History() {
   const [appStatus, setappStatus] = useState(false);
@@ -48,10 +48,8 @@ export default function History() {
           Request Status
         </Link>
       </div>
-      <div>
-      {/* <ApplicationStatus /> */}
-      </div>
-      <div>{appStatus ? <ApplicationStatus /> : ""}</div>
+      <Box ></Box>
+      <div>{appStatus ? <ApplicationStatus/> : ""}</div>
       <div>{reqStatus ? <RequestStatus /> : ""}</div>
       
     </div>

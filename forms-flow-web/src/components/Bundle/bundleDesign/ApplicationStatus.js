@@ -1,6 +1,6 @@
-import { Link, Typography } from "@material-ui/core";
+import { Box, Link, Typography } from "@material-ui/core";
 import React from "react";
-// import BundleStepper from './HistoryStepper';
+import HistoryStepper from "./HistoryStepper";
 
 export default function ApplicationStatus() {
   const containerStyle = {
@@ -13,8 +13,9 @@ const ptag = {
 };
 
   return (
-      <div style={containerStyle}>
-            {/* <BundleStepper/> */}
+      <Box style={{display:"flex"}}>
+            <HistoryStepper/>
+            <div style={containerStyle}>
             <div>
              <Typography className="" style={ptag}> <span style={{ fontWeight: 'bold' }}>3/22/2023,</span> <br></br>11:37:44 am</Typography>
             </div>
@@ -28,8 +29,8 @@ const ptag = {
              href="#">
                  View Submission
             </Link> 
-           </div>
-            
-    </div>
+           </div> 
+           </div> 
+    </Box>
   );
 }
