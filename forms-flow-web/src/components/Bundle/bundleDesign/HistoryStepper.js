@@ -54,7 +54,7 @@ export default function HistoryStepper() {
 //     setActiveStep(0);
 //   };
 const MuiStepperroot = {
-  paddingLeft : "0px",
+
   paddingBlock : "0px"
 };
 
