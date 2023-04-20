@@ -3,12 +3,13 @@ import Button from "@material-ui/core/Button";
 import { useState } from 'react';
 import ApplicationStatus from './ApplicationStatus';
 
-export default function RequestStatus() {
-  const [clicked, setclicked] = useState(false);
+export default function RequestStatus(props) {
+  const application = props.application;
+  const [expanded, setExpanded] = useState(false);
 
-  const Reqtable = {
-    paddingRight : "360px"
-  };
+  // const Reqtable = {
+  //   paddingRight : "360px"
+  // };
   const arrow = {
     paddingInline : "120px"
   };
@@ -21,39 +22,43 @@ export default function RequestStatus() {
     paddingInline : "14px"
   };
   const statusExpand = ()=>{
-    setclicked(true);
+    setExpanded(!expanded);
   };
+
+
  
   return (
     <table className="table table-striped bt-0" >
   <thead >
     <tr >
-      <th  scope="col" style={Reqtable} >Request Name</th>
-      <th  scope="col">Status</th>
+      <th  scope="col" style={{paddingRight: "500px" }} >Request Name</th>
+      <th  scope="col" style={{ textAlign: "center" }}>Status</th>
       <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th scope="row">form one</th>
-      <Button style={Statusbutton}>Completed</Button>
+      <th scope="row">{application.applicationName}</th>
+      <Button style={Statusbutton}>{application.applicationStatus}</Button>
       <td style={arrow}>  
-      <i className="fa fa-chevron-down" onClick={statusExpand}></i>
+      <i className={`fa ${expanded ? 'fa-chevron-up' : 'fa-chevron-down'}`} onClick={statusExpand}></i>
       </td>
     </tr>
-    <tr>
-    {
-      clicked ? <ApplicationStatus/> : "" 
+    {expanded && (
+          <tr>
+            <td colSpan={3} style={{padding: "35px", boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.3)'}}>
+              <ApplicationStatus application={props.application} />
+            </td>
+          </tr>
+    )
     }
-    </tr>
-    
-    <tr>
+    {/* <tr>
       <th scope="row">form two</th>
       <Button style={Statusbutton}>Completed</Button>
-      <td style={arrow} >
+      <td style={arrow}>
       <i className="fa fa-chevron-down"></i>
       </td>
-    </tr>
+    </tr> */}
     
   </tbody>
 </table>

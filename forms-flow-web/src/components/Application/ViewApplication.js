@@ -123,7 +123,7 @@ const ViewApplication = React.memo(() => {
           eventKey="history"
           title={<Translation>{(t) => t("History")}</Translation>}
         >
-        {bundle ? <Bundlehistory/> : <History page="application-detail" applicationId={applicationId} />}
+        {bundle ? <Bundlehistory application={applicationDetail}/> : <History page="application-detail" applicationId={applicationId} />}
         </Tab>
         <Tab
           eventKey="process-diagram"

@@ -74,7 +74,7 @@ const MuiStepperroot = {
           }
           return (
             <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
+              <StepLabel style={{ marginBottom: '25px' }} {...labelProps}>{label}</StepLabel>
             </Step>
           );
         })}

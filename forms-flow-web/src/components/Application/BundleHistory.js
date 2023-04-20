@@ -3,9 +3,11 @@ import RequestStatus from "../Bundle/bundleDesign/RequestStatus";
 import ApplicationStatus from "../Bundle/bundleDesign/ApplicationStatus";
 import { useState } from "react";
 import "./Application.scss";
-import { Box, Link } from "@material-ui/core";
+import {  Link } from "@material-ui/core";
 
-export default function History() {
+
+
+export default function BundleHistory(props) {
   const [appStatus, setappStatus] = useState(false);
   const [reqStatus, setreqStatus] = useState(false);
 //   const [clicked, setClicked] = useState(false);
@@ -35,12 +37,15 @@ export default function History() {
   return (
     <div className="history-panel">
       <div style={containerStyle}>
-        
-        <Link onClick={AppstatusView} 
+        <div>
+        <i className="fas fa-file-alt"></i>
+        <Link onClick={AppstatusView}
            href="" 
            style={{ textDecoration: appStatus ? 'underline' : undefined }}>
            Application Status 
         </Link>
+        </div>
+        
         <Link
           onClick={ReqstatusView}
           href=""
@@ -48,9 +53,8 @@ export default function History() {
           Request Status
         </Link>
       </div>
-      <Box ></Box>
-      <div>{appStatus ? <ApplicationStatus/> : ""}</div>
-      <div>{reqStatus ? <RequestStatus /> : ""}</div>
+      <div>{appStatus ? <ApplicationStatus application={props.application}/> : ""}</div>
+      <div>{reqStatus ? <RequestStatus application={props.application} /> : ""}</div>
       
     </div>
   );
