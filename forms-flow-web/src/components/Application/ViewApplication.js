@@ -22,6 +22,7 @@ import { fetchAllBpmProcesses } from "../../apiManager/services/processServices"
 import { getCustomSubmission } from "../../apiManager/services/FormServices";
 import { setBundleSubmissionData } from "../../actions/bundleActions";
 import BundleView from "../Bundle/item/submission/View";
+import BundleHistory from './BundleHistory';
 
 const ViewApplication = React.memo(() => {
   const {t} = useTranslation();
@@ -41,6 +42,7 @@ const ViewApplication = React.memo(() => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const bundle = true;
 
   useEffect(() => {
     dispatch(setApplicationDetailLoader(true));
@@ -127,7 +129,7 @@ const ViewApplication = React.memo(() => {
           eventKey="history"
           title={<Translation>{(t) => t("History")}</Translation>}
         >
-          <History page="application-detail" applicationId={applicationId} />
+         {bundle ? <BundleHistory application={applicationDetail}/> : <History page="application-detail" applicationId={applicationId} />}
         </Tab>
         <Tab
           eventKey="process-diagram"
