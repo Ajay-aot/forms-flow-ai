@@ -59,6 +59,8 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
 import { handleAuthorization, fetchFormAuthorizationDetials } from "../../apiManager/services/authorizationService.js";
+import ThemeSelector from "./Theming";
+
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -487,6 +489,7 @@ const List = React.memo((props) => {
     });
   };
 
+  
   const noDataFound = () => {
     return (
       <span>
@@ -720,6 +723,7 @@ const List = React.memo((props) => {
                       <i className="fa fa-download fa-lg" aria-hidden="true" />{" "}
                       { formCheckList.length !== 0 && t("Download Form")}{" "}
                     </button>
+                    <ThemeSelector/>
                   </>
                 )}
               </div>
