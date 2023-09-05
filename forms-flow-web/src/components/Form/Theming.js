@@ -4,9 +4,7 @@ console.log(JsonService);
 
 function ThemeSelector() {
   const storedThemeName = localStorage.getItem('selectedThemeName');
-  console.log(storedThemeName)
   const defaultThemeIndex = JsonService.findIndex(theme => theme.name === storedThemeName);
-  console.log(defaultThemeIndex)
 
   const [selectedThemeIndex, setSelectedThemeIndex] = useState(
     defaultThemeIndex >= 0 ? defaultThemeIndex : 0
@@ -42,7 +40,7 @@ function ThemeSelector() {
 
   return (
     <div>
-      <select id="themeSelector" value={selectedThemeIndex} onChange={handleThemeChange}>
+      <select className='theme-button btn btn-left btn-sm' id="themeSelector" value={selectedThemeIndex} onChange={handleThemeChange}>
         {JsonService.map((theme, index) => (
           <option key={index} value={index}>
             {theme.name}
