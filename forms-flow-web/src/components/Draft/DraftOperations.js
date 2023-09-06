@@ -28,7 +28,7 @@ const DraftOperations = ({ row }) => {
     <>
       <div>
         <Link to={url} style={{ textDecoration: "none" }}>
-          <span style={{ color: "blue", cursor: "pointer" }}>
+          <span className="edit-view">
             <span>
               <i className={icon} />
               &nbsp;
