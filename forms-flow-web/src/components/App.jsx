@@ -7,25 +7,28 @@ import "../assets/styles/user-styles.css";
 import BaseRouting from "./BaseRouting";
 import { Helmet } from "react-helmet";
 import { KEYCLOAK_URL } from "../constants/constants";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const App = React.memo((props) => {
   const { store, history, publish, subscribe, getKcInstance } = props;
   return (
-    <div className="main-container">
-      <Helmet>
-        {KEYCLOAK_URL ? <link rel="preconnect" href={KEYCLOAK_URL} /> : null}
-      </Helmet>
-      <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <BaseRouting
-            store={store}
-            publish={publish}
-            subscribe={subscribe}
-            getKcInstance={getKcInstance}
-          />
-        </ConnectedRouter>
-      </Provider>
-    </div>
+    <Router>
+      <div className="main-container">
+        <Helmet>
+          {KEYCLOAK_URL ? <link rel="preconnect" href={KEYCLOAK_URL} /> : null}
+        </Helmet>
+        <Provider store={store}>
+          <ConnectedRouter history={history}>
+            <BaseRouting
+              store={store}
+              publish={publish}
+              subscribe={subscribe}
+              getKcInstance={getKcInstance}
+            />
+          </ConnectedRouter>
+        </Provider>
+      </div>
+      </Router>
   );
 });
 

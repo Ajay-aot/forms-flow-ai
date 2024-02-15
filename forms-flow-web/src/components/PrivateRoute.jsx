@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, Suspense, lazy, useMemo } from "react";
-import { Route, Switch, Redirect, useParams } from "react-router-dom";
+import { Route, Navigate, useParams, Routes } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   BASE_ROUTE,
@@ -123,14 +123,12 @@ const PrivateRoute = React.memo((props) => {
         authenticate(kcInstance, props.store);
       } else {
         instance.initKeycloak((authenticated) => {
-          if(!authenticated)
-          {
-           toast.error("Unauthorized Access.",{autoClose: 3000});
-           setTimeout(function() {
-            instance.userLogout();
-          }, 3000);
-          }
-          else{
+          if (!authenticated) {
+            toast.error("Unauthorized Access.", { autoClose: 3000 });
+            setTimeout(function () {
+              instance.userLogout();
+            }, 3000);
+          } else {
             authenticate(instance, props.store);
             publish("FF_AUTH", instance);
           }
@@ -143,13 +141,13 @@ const PrivateRoute = React.memo((props) => {
 
   const DesignerRoute = useMemo(
     () =>
-      ({ component: Component, ...rest }) =>
+      ({ element: Element, ...rest }) =>
         (
           <Route
             {...rest}
-            render={(props) =>
+            element={(props) =>
               userRoles.includes(STAFF_DESIGNER) ? (
-                <Component {...props} />
+                <Element {...props} />
               ) : (
                 <>unauthorized</>
               )
@@ -161,13 +159,13 @@ const PrivateRoute = React.memo((props) => {
 
   const ReviewerRoute = useMemo(
     () =>
-      ({ component: Component, ...rest }) =>
+      ({ element: Element, ...rest }) =>
         (
           <Route
             {...rest}
-            render={(props) =>
+            element={(props) =>
               userRoles.includes(STAFF_REVIEWER) ? (
-                <Component {...props} />
+                <Element {...props} />
               ) : (
                 <>unauthorized</>
               )
@@ -179,14 +177,14 @@ const PrivateRoute = React.memo((props) => {
 
   const ClientReviewerRoute = useMemo(
     () =>
-      ({ component: Component, ...rest }) =>
+      ({ element: Element, ...rest }) =>
         (
           <Route
             {...rest}
-            render={(props) =>
+            element={(props) =>
               userRoles.includes(STAFF_REVIEWER) ||
               userRoles.includes(CLIENT) ? (
-                <Component {...props} />
+                <Element {...props} />
               ) : (
                 <>unauthorized</>
               )
@@ -198,15 +196,15 @@ const PrivateRoute = React.memo((props) => {
 
   const DraftRoute = useMemo(
     () =>
-      ({ component: Component, ...rest }) =>
+      ({ element: Element, ...rest }) =>
         (
           <Route
             {...rest}
-            render={(props) =>
+            element={(props) =>
               DRAFT_ENABLED &&
               (userRoles.includes(STAFF_REVIEWER) ||
                 userRoles.includes(CLIENT)) ? (
-                <Component {...props} />
+                <Element {...props} />
               ) : (
                 <>unauthorized</>
               )
@@ -218,63 +216,67 @@ const PrivateRoute = React.memo((props) => {
   return (
     <>
       {isAuth ? (
-        <Suspense fallback={<Loading />}>
-          <Switch>
+        // <Suspense fallback={<Loading />}>
+          <Routes>
             {ENABLE_FORMS_MODULE && (
-              <Route path={`${BASE_ROUTE}form`} component={Form} />
+              <Route path={`form`} element={<NotFound/>} />
             )}
             {ENABLE_FORMS_MODULE && (
-              <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
+              <DesignerRoute
+                path={`${BASE_ROUTE}formflow`}
+                element={<Form />}
+              />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
-              <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
+              <DraftRoute path={`${BASE_ROUTE}draft`} element={<Drafts />} />
             )}
             {ENABLE_APPLICATIONS_MODULE && (
               <ClientReviewerRoute
                 path={`${BASE_ROUTE}application`}
-                component={Application}
+                element={<Application />}
               />
             )}
 
             {ENABLE_PROCESSES_MODULE && (
               <DesignerRoute
                 path={`${BASE_ROUTE}processes`}
-                component={Modeler}
+                element={<Modeler />}
               />
             )}
 
             {ENABLE_DASHBOARDS_MODULE && (
               <ReviewerRoute
                 path={`${BASE_ROUTE}metrics`}
-                component={DashboardPage}
+                element={<DashboardPage />}
               />
             )}
             {ENABLE_DASHBOARDS_MODULE && (
               <ReviewerRoute
                 path={`${BASE_ROUTE}insights`}
-                component={InsightsPage}
+                element={<InsightsPage />}
               />
             )}
             {ENABLE_TASKS_MODULE && (
               <ReviewerRoute
                 path={`${BASE_ROUTE}task`}
-                component={ServiceFlow}
+                element={<ServiceFlow />}
               />
             )}
 
-            <Route exact path={BASE_ROUTE}>
-             {userRoles.length && <Redirect
-                to={
-                  userRoles?.includes(STAFF_REVIEWER)
-                    ? `${redirecUrl}task`
-                    : `${redirecUrl}form`
-                }
-              />}
-            </Route>
-            <Route path="/404" exact={true} component={NotFound} />
-            <Redirect from="*" to="/404" />
-          </Switch>
-        </Suspense>
+            <Route
+              path={BASE_ROUTE}
+              element={
+                userRoles?.includes(STAFF_REVIEWER) ? (
+                  <Navigate to={`${redirecUrl}task`} />
+                ) : (
+                  <Navigate to={`${redirecUrl}form`} />
+                )
+              }
+            />
+            <Route path="/404" element={<NotFound />} />
+            <Route path="*" element={<Navigate to="/404" />} />
+          </Routes>
+        // </Suspense>
       ) : (
         <Loading />
       )}

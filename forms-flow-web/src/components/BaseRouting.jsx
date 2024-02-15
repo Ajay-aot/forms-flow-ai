@@ -1,9 +1,9 @@
 import React from "react";
-import { Route, Switch, Redirect, useLocation } from "react-router-dom";
+import { Route, Routes, Navigate, useLocation} from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import PublicRoute from "./PublicRoute";
-import PrivateRoute from "./PrivateRoute";
+import PrivateRoute from "./Abc";
 import { BASE_ROUTE } from "../constants/constants";
 
 import Footer from "../components/Footer";
@@ -56,26 +56,22 @@ const BaseRouting = React.memo(
         <div className="container  mt-5">
         <div className="min-container-height ps-md-3">
         <ToastContainer />
-            <Switch>
-              <Route path="/public">
-                <PublicRoute
-                  store={store}
-                  publish={publish}
-                  subscribe={subscribe}
-                  getKcInstance={getKcInstance}
-                />
-              </Route>
-              <Route path={BASE_ROUTE}>
+            <Routes>
+            <Route path="/sdaf" element={<PublicRoute store={store} publish={publish} subscribe={subscribe} getKcInstance={getKcInstance} />} />
+            <Route
+              path={'/sample'}
+              element={
                 <PrivateRoute
                   store={store}
                   publish={publish}
                   subscribe={subscribe}
                   getKcInstance={getKcInstance}
                 />
-              </Route>
-              <Route path="/404" exact={true} component={NotFound} />
-              <Redirect from="*" to="/404" />
-            </Switch>
+              }
+            />
+              <Route path="/404" element={<NotFound />} />
+              <Route path="*" element={<Navigate to="/404jj" replace />} />
+            </Routes>
         </div>
             {isAuth ? <Footer /> : null}
         </div>
