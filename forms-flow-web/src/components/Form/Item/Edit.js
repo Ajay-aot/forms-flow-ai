@@ -4,7 +4,7 @@ import { Card } from 'react-bootstrap';
 import { Errors, FormBuilder, Formio } from "@aot-technologies/formio-react";
 import { BackToPrevIcon } from "@formsflow/components";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
-import { CustomButton, ConfirmModal } from "@formsflow/components";
+import { CustomButton, ConfirmModal, HistoryModal } from "@formsflow/components";
 import { RESOURCE_BUNDLES_DATA } from "../../../resourceBundles/i18n";
 import LoadingOverlay from "react-loading-overlay-ts";
 import _set from "lodash/set";
@@ -20,7 +20,7 @@ import {
 } from "../../../constants/constants";
 //for save form
 import { manipulatingFormData } from "../../../apiManager/services/formFormatterService";
-import { formUpdate } from "../../../apiManager/services/FormServices";
+import { formUpdate, getFormHistory } from "../../../apiManager/services/FormServices";
 import { INACTIVE } from "../constants/formListConstants";
 import utils from "@aot-technologies/formiojs/lib/utils";
 import {
@@ -28,6 +28,7 @@ import {
   setFormSuccessData,
   setRestoreFormData,
   setRestoreFormId,
+  setFormHistories
 } from "../../../actions/formActions";
 import {
   saveFormProcessMapperPost,
@@ -84,12 +85,14 @@ const Edit = React.memo(() => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formAccess = useSelector((state) => state.user?.formAccess || []);
   const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
+  const formHistory = useSelector((state) => state.formRestore?.formHistory || []);
   const previousData = useSelector((state) => state.process?.formPreviousData);
   const formDescription = form?.description;
   const restoredFormData = useSelector((state) => state.formRestore?.restoredFormData);
   const restoredFormId = useSelector((state) => state.formRestore?.restoredFormId);
   const applicationCount = useSelector((state) => state.process?.applicationCount);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showHistoryModal, setshowHistoryModal] = useState(false);
   const [hasRendered, setHasRendered] = useState(false);
   const roleIds = useSelector((state) => state.user?.roleIds || {});
 
@@ -123,6 +126,8 @@ const Edit = React.memo(() => {
     setShowFlow(true);
     setShowLayout(false);
   };
+
+
 
   //for save farm 
   const isMapperSaveNeeded = (newData) => {
@@ -313,8 +318,20 @@ const Edit = React.memo(() => {
     console.log("back", redirectUrl);
   };
 
+  const closeHistoryModal = () => {
+    setshowHistoryModal(false);
+  };
+
   const handleHistory = () => {
     console.log("handleHistory");
+    setshowHistoryModal(true);
+    if (processListData?.parentFormId && !formHistory.length) {
+      getFormHistory(processListData?.parentFormId).then((res) => {
+        dispatch(setFormHistories(res.data));
+      }).catch(() => {
+        setFormHistories([]);
+      });
+    }
   };
 
   const handlePreviewAndVariables = () => {
@@ -563,6 +580,15 @@ handleConfirm={handleConfirmSettings} />
         onClose={onCloseActionModal}
         CategoryType={CategoryType.FORM}
       />
+
+      <HistoryModal
+        show={showHistoryModal}
+        onClose={closeHistoryModal}
+        title={<Translation>{(t) => t("History")}</Translation>}
+        loadMoreBtnText={<Translation>{(t) => t("Load More")}</Translation>}
+        revertBtnText={<Translation>{(t) => t("Revert To This")}</Translation>}
+        formHistory={formHistory}
+       />
 
       <ConfirmModal
         show={showSaveModal}
