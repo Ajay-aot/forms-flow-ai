@@ -17,9 +17,10 @@ import {
   unClaimBPMTask,
   updateAssigneeBPMTask,
   updateBPMTask,
+  fetchUserList
 } from "../../../apiManager/services/bpmTaskServices";
 import { setBPMTaskDetailUpdating } from "../../../actions/bpmTaskActions";
-import UserSelectionDebounce from "./UserSelectionDebounce";
+// import UserSelectionDebounce from "./UserSelectionDebounce";
 // import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 import  userRoles   from "../../../constants/permissions";
@@ -28,8 +29,12 @@ import {
   USER_NAME_DISPLAY_CLAIM
 } from "../../../constants/constants";
 import get from "lodash/get";
+import {
+  AssignUser
+} from "@formsflow/components";
 
 const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
+  console.log("task",task);
   const username = useSelector((state) => {
     let value = get(state.user?.userDetail, USER_NAME_DISPLAY_CLAIM, undefined);
     // If value is undefined, fallback to 'preferred_username'
@@ -47,6 +52,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
   const taskGroups = useSelector((state) => state.bpmTasks.taskGroups);
   // const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
+  const userList = useSelector((state) => state.bpmTasks.userList.data || []);
   const vissibleAttributes = useSelector((state) => state.bpmTasks.vissibleAttributes);
   const firstResult = useSelector((state) => state.bpmTasks.firstResult);
   const [followUpDate, setFollowUpDate] = useState(null);
@@ -116,6 +122,18 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
       unClaimBPMTask(taskId, updateBpmTasksAndDetails)
     );
   };
+
+  const meOnClick = () => {
+    onClaim();
+  };
+
+  const othersOnClick  = () => {
+    console.log("others");
+  };
+
+  useEffect(() => {
+      dispatch(fetchUserList());
+  }, []);
 
   const onFollowUpDateUpdate = (followUpDate) => {
     setFollowUpDate(followUpDate);
@@ -276,7 +294,16 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
             <div>
               <h6 className="fw-bold">{t("Assignee")}</h6>
             </div>
-            <div className="actionable word-break" style={{ cursor: !manageTasks ? 'default' : 'pointer' }}>
+            {!isEditAssignee && (<AssignUser 
+            size="sm" 
+            users={userList} 
+            username={task?.assignee || ""}  
+            meOnClick={meOnClick} 
+            othersOnClick={othersOnClick}
+            optionSelect={onChangeClaim}
+            handleCloseClick={onUnClaimTask}
+            />)}
+            {/* <div className="actionable word-break" style={{ cursor: !manageTasks ? 'default' : 'pointer' }}>
               {isEditAssignee && manageTasks ? (
                 task?.assignee ? (
                   <span>
@@ -320,7 +347,7 @@ const TaskHeaderListView = React.memo(({task,taskId,groupView = true}) => {
                   )}
                 </>
               )}
-            </div>
+            </div> */}
           </div>
         </Col>
       )}
